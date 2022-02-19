@@ -1,4 +1,4 @@
-import react from 'react';
+
 
 const ContactCard =(props)=>{
 
@@ -11,7 +11,9 @@ const ContactCard =(props)=>{
                 <div>{email}</div>
             </div>
             <i className="trash alternate outline icon"
-            style={{color:"red",marginTop:"10px"}}></i>
+            style={{color:"red",marginTop:"10px"}}
+            onClick={()=>props.clickHandler(id)}
+            ></i>
         </div>
     );
 };

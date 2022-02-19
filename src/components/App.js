@@ -4,7 +4,8 @@ import Header from './Header';
 import ContactList from './ContactList';
 import AddContact from './AddContact';
 import {useState,useEffect} from 'react';
-import {uuid} from 'uuidv4';
+import { v4 as uuid } from 'uuid';
+
 function App() {
 
   const LOCAL_STORAGE_KEY ="contacts";
@@ -17,7 +18,7 @@ function App() {
 
   const removeContactHandler=(id)=>{
     const newContactList=contacts.filter((contact)=>{
-      return contact.id!=id;
+      return contact.id!==id;
     })
     setContacts(newContactList);
   }
@@ -35,7 +36,7 @@ function App() {
     <div className="ui container">
      <Header />
       <AddContact addContactHandler={addContactHandler} />
-     <ContactList contacts={contacts}removeContactHandler={removeContactHandler}/>
+     <ContactList contacts={contacts} removeContactHandler={removeContactHandler}/>
     </div>
   );
 }
