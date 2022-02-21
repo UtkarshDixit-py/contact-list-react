@@ -1,29 +1,93 @@
 import {createContext, useContext ,useState } from 'react';
+import { uuid } from 'uuidv4';
 
 const contactsCrudContext = createContext();
 
 export function ContactsCrudContextProvider({children}){
 
     const [contacts,setContacts] = useState([]);
-    const api = "https://jsonplaceholder.typicode.com";
+    
 
-    // RetrieveContacts 
-    const retrieveContacts = async()=>{
-        const response = await api.get("/users");
-        if(response.data) {
-            setContacts(response.data);
+     //CREATE
+     const addContactHandler = async(contact)=>{
+        
+        fetch("https://jsonplaceholder.typicode.com/users",{
+        method:'POST',
+        body:JSON.stringify({
+            id: uuid(),
+            ...contact
+            // name : contact.name,
+            // email: contact.email
+        }),
+        headers:{
+            "Content-type":"application/json; charset=UTF-8"
         }
-    }; 
+        })
+            .then(res=>res.json())
+            .then(data=>setContacts([...contacts,data]))
 
-    // const retrieveContacts = async()=>{
-    //     const  response = await fetch('https://jsonplaceholder.typicode.com/users');
-    //     const json = await response.json();
-    //     setContacts(json.data);
-    // }
+           
+     };
+
+
+
+    // READ
+    const retrieveContacts = async()=>{
+        
+        fetch("https://jsonplaceholder.typicode.com/users")
+        .then((response)=>response.json())
+        .then((data)=>{
+            setContacts(data);
+        })
+        .catch(()=>{
+            console.log("error here");
+        });
+    };
+
+    //UPDATE
+    const editContactHandler = async(contact)=>{
+        
+        fetch(`https://jsonplaceholder.typicode.com/users/${contact.id}`,{
+        method:'PUT',
+        body:JSON.stringify({
+            id: contact.id,
+            ...contact,
+            // name : contact.name,
+            // email: contact.email
+        }),
+        headers:{
+            "Content-type":"application/json; charset=UTF-8",
+        },
+        })
+            .then(res=>res.json())
+            .then(data=>setContacts(
+                contacts.map((contact)=>{
+                        return contact.id === data ? {...data} : contact;
+                })
+            ))
+    }
+
+
+   
+
+     //DELETE
+    const deleteContactHandler=async(id)=>{
+        fetch(`https://jsonplaceholder.typicode.com/users${id}`,{
+            method:'DELETE'
+        })
+        const newContactList=contacts.filter((contact)=>{
+            return contact.id!==id;
+        });
+        setContacts(newContactList);
+    }
 
     const value = {
+        
         contacts,
-        retrieveContacts 
+        retrieveContacts,
+        deleteContactHandler,
+        addContactHandler,
+        editContactHandler,
     }
 
     

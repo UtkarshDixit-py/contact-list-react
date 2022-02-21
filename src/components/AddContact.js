@@ -1,34 +1,41 @@
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useContactsCrud } from "../context/ContactsCrudContext";
 
-class AddContact extends React.Component {
-  state = {
-    name: "",
-    email: "",
-  };
-  add = (e) => {
+const  AddContact =()=>{
+  const [email,setEmail] = useState("");
+  const [name,setName] = useState("");
+  const navigate = useNavigate();
+
+  const {addContactHandler} = useContactsCrud();
+
+  const add = (e) => {
     e.preventDefault();
-    if (this.state.name === "" || this.state.email === "") {
+    if (name === "" || email === "") {
       alert("All feilds are mandatory");
       return;
     }
 
-    this.props.addContactHandler(this.state);
-    this.setState({ name: "", email: "" });
+    addContactHandler({name,email});
+    setName("");
+    setEmail("");
+    navigate("/");
+
   };
 
-  render() {
+ 
     return (
       <div className="ui main">
         <h2>Add Contact</h2>
-        <form className="ui form" onSubmit={this.add}>
+        <form className="ui form" onSubmit={add}>
           <div className="field">
             <label>Name</label>
             <input
               type="text"
               name="name"
               placeholder="Name"
-              value={this.state.name}
-              onChange={(e) => this.setState({ name: e.target.value })}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
             />
           </div>
 
@@ -37,9 +44,9 @@ class AddContact extends React.Component {
             <input
               type="text"
               name="email"
-              value={this.state.email}
+              value={email}
               placeholder="Email"
-              onChange={(e) => this.setState({ email: e.target.value })}
+              onChange={(e) =>setEmail( e.target.value )}
             />
           </div>
 
@@ -52,7 +59,7 @@ class AddContact extends React.Component {
         </form>
       </div>
     );
-  }
+  
 }
 
 export default AddContact;
